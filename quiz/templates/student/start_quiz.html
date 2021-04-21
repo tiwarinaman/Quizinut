@@ -87,50 +87,28 @@
     </div>
 
     <div class="container mt-sm-5 mt-4" id="quiz-body">
+        <header>
+            <div class="title">Awesome Quiz Application</div>
+            <div class="timer">
+                <div class="time_left_txt">Time Left</div>
+                <div class="timer_sec">15</div>
+            </div>
+            <div class="time_line" style="width: 47px;"></div>
+        </header>
         <div class="question ml-sm-5 pl-sm-5 pt-2">
             <div class="py-2 h5">
                 <span class="font-weight-bold" id="question">Q.</span>
                 <b><span id="question"></span></b>
             </div>
-            <div class="ml-md-3 ml-sm-3 pl-md-5 pt-sm-0 pt-3" id="options">
+            <div class="option_list" id="options">
 
-                <label class="options">
-                    <span id="option1"></span>
-                    <input type="radio" value="option1" name="radio" onclick="quizCtrl.chooseOption('option1')">
-                    <span class="checkmark"></span>
-                </label>
-
-                <label class="options">
-                    <span id="option2"></span>
-                    <input type="radio" name="radio" onclick="quizCtrl.chooseOption('option2')">
-                    <span class="checkmark"></span>
-                </label>
-
-                <label class="options">
-                    <span id="option3"></span>
-                    <input type="radio" name="radio" onclick="quizCtrl.chooseOption('option3')">
-                    <span class="checkmark"></span>
-                </label>
-
-                <label class="options">
-                    <span id="option4"></span>
-                    <input type="radio" name="radio" onclick="quizCtrl.chooseOption('option4')">
-                    <span class="checkmark"></span>
-                </label>
             </div>
         </div>
 
         <div class="d-flex align-items-center pt-3">
 
-            <div id="prev">
-                <button onclick="quizCtrl.previous()" class="btn btn-primary"
-                        role="button">Previous
-                </button>
-            </div>
-
-
             <div class="ml-auto mr-sm-5">
-                <button onclick="quizCtrl.next()" class="btn btn-info" role="button">Next</button>
+                <button id="btnNext" onclick="quizCtrl.next()" class="btn btn-info" role="button">Next</button>
                 <button id="btnSubmit" class="btn btn-success font-weight-bold" role="button">Submit</button>
             </div>
 
