@@ -2,7 +2,9 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import auth
+from django.core import serializers
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 
 from quiz.permission import *
@@ -295,6 +297,9 @@ def start_quiz(request, quiz_id):
     quiz = Quiz.objects.get(id=quiz_id)
     questions = Question.objects.filter(quiz=quiz)
 
+    if request.is_ajax():
+        return JsonResponse(questions, safe=False)
+
     paginator = Paginator(questions, 1)
 
     try:
@@ -308,6 +313,16 @@ def start_quiz(request, quiz_id):
         questions = paginator.page(paginator.num_pages)
 
     context = {
-        'questions': questions
+        'questions': questions,
+        'qid': quiz_id,
     }
     return render(request, 'student/start_quiz.html', context)
+
+
+@login_required(login_url='/student-login')
+@user_is_student
+def get_questions(request, quiz_id):
+    quiz = Quiz.objects.get(id=quiz_id)
+    questions = Question.objects.filter(quiz=quiz)
+    data = serializers.serialize('json', questions)
+    return HttpResponse(data, content_type='application/json')
