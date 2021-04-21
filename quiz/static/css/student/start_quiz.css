@@ -1,3 +1,21 @@
+#start-button {
+    box-shadow: 0px 0px 5px 5px black;
+    padding: 15px;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+
+}
+
+.alert {
+    width: 50%;
+    margin: 10px auto;
+}
+
 .container {
     background-color: #f2f2f2;
     color: black;
@@ -69,16 +87,6 @@
     transform: translate(-50%, -50%) scale(1)
 }
 
-.btn-primary {
-    background-color: #555;
-    color: #ddd;
-    border: 1px solid #ddd
-}
-
-.btn-primary:hover {
-    background-color: #21bf73;
-    border: 1px solid #21bf73
-}
 
 .btn-success {
     padding: 5px 25px;

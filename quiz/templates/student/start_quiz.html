@@ -12,7 +12,7 @@
 {% block body %}
 
     <!-- Button trigger modal -->
-    <button id="start-button" type="button" class="btn btn-primary" data-toggle="modal"
+    <button id="start-button" type="button" class="btn btn-primary mt-2 btn-lg" data-toggle="modal"
             data-target="#exampleModalScrollable">
         Start Quiz
     </button>
@@ -82,38 +82,44 @@
         </div>
     </div>
 
+    <div class="alert alert-success" role="alert" id="resultMessage">
+        Correct Answer
+    </div>
+
     <div class="container mt-sm-5 mt-4" id="quiz-body">
-        {% for question in questions %}
-            <div class="question ml-sm-5 pl-sm-5 pt-2">
-                <div class="py-2 h5">
-                    <span class="font-weight-bold">Q.</span>
-                    <b>{{ question.question }}</b>
-                </div>
-                <div class="ml-md-3 ml-sm-3 pl-md-5 pt-sm-0 pt-3" id="options">
-
-                    <label class="options">
-                        {{ question.option1 }}
-                        <input type="radio" name="radio"> <span class="checkmark"></span>
-                    </label>
-
-                    <label class="options">
-                        {{ question.option2 }}
-                        <input type="radio" name="radio"> <span class="checkmark"></span>
-                    </label>
-
-                    <label class="options">
-                        {{ question.option3 }}
-                        <input type="radio" name="radio"> <span class="checkmark"></span>
-                    </label>
-
-                    <label class="options">
-                        {{ question.option4 }}
-                        <input type="radio" name="radio">
-                        <span class="checkmark"></span>
-                    </label>
-                </div>
+        <div class="question ml-sm-5 pl-sm-5 pt-2">
+            <div class="py-2 h5">
+                <span class="font-weight-bold" id="question">Q.</span>
+                <b><span id="question"></span></b>
             </div>
-        {% endfor %}
+            <div class="ml-md-3 ml-sm-3 pl-md-5 pt-sm-0 pt-3" id="options">
+
+                <label class="options">
+                    <span id="option1"></span>
+                    <input type="radio" value="option1" name="radio" onclick="quizCtrl.chooseOption('option1')">
+                    <span class="checkmark"></span>
+                </label>
+
+                <label class="options">
+                    <span id="option2"></span>
+                    <input type="radio" name="radio" onclick="quizCtrl.chooseOption('option2')">
+                    <span class="checkmark"></span>
+                </label>
+
+                <label class="options">
+                    <span id="option3"></span>
+                    <input type="radio" name="radio" onclick="quizCtrl.chooseOption('option3')">
+                    <span class="checkmark"></span>
+                </label>
+
+                <label class="options">
+                    <span id="option4"></span>
+                    <input type="radio" name="radio" onclick="quizCtrl.chooseOption('option4')">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+        </div>
+
         <div class="d-flex align-items-center pt-3">
 
             <div id="prev">
@@ -124,7 +130,8 @@
 
 
             <div class="ml-auto mr-sm-5">
-                <a onclick="quizCtrl.next()" class="btn btn-success" role="button">Next</a>
+                <button onclick="quizCtrl.next()" class="btn btn-info" role="button">Next</button>
+                <button id="btnSubmit" class="btn btn-success font-weight-bold" role="button">Submit</button>
             </div>
 
         </div>
