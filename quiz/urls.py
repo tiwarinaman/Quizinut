@@ -19,4 +19,5 @@ urlpatterns = [
                   path('delete-quiz/<int:quiz_id>/', views.delete_quiz, name="deleteQuiz"),
                   path('quiz-info/<int:quiz_id>/', views.quiz_info, name="quizInfo"),
                   path('start-quiz/<int:quiz_id>/', views.start_quiz, name="startQuiz"),
+                  path('get-questions/<int:quiz_id>/', views.get_questions, name="getQuestions"),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
