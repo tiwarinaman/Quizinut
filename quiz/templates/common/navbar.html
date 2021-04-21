@@ -1,0 +1,92 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand font-weight-bold" href="{% url 'home' %}">Quizinut</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'home' %}">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </li>
+
+            {% if user.is_authenticated %}
+                {% if user.role == "student" %}
+
+                {% elif user.role == "teacher" %}
+                    <li class="nav-item dropdown active">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Quiz <i class="fas fa-book"></i>
+                        </a>
+
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{% url 'createNewQuiz' %}">
+                                <i class="fas fa-plus-square"></i> Create New Quiz
+                            </a>
+                            <a class="dropdown-item" href="{% url 'viewQuizzes' %}">
+                                <i class="fas fa-book"></i> View Quiz
+                            </a>
+                        </div>
+                    </li>
+                {% endif %}
+                <li class="nav-item dropdown active">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        WELCOME, <span class="text-uppercase">{{ user.first_name }} <i
+                            class="fas fa-user"></i></span>
+                    </a>
+
+
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#"><i
+                                class="fas fa-key"></i> Change Password</a>
+                        <a class="dropdown-item" href="#"><i
+                                class="fas fa-user-edit"></i> Edit Profile</a>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'logout' %}">
+                        <i class="fas fa-sign-out-alt"></i> Sign-Out
+                    </a>
+                </li>
+            {% else %}
+                <li class="nav-item dropdown active">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Sign-In <i class="fas fa-sign-in-alt"></i>
+                    </a>
+
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url 'studentLogin' %}">
+                            Student
+                        </a>
+                        <a class="dropdown-item" href="{% url 'teacherLogin' %}">
+                            Teacher
+                        </a>
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown active">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Sign-Up
+                    </a>
+
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url 'studentSignUp' %}">
+                            Student
+                        </a>
+                        <a class="dropdown-item" href="{% url 'teacherSignUp' %}">
+                            Teacher
+                        </a>
+                    </div>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>

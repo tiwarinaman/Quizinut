@@ -1,0 +1,86 @@
+{% extends 'common/base.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/student/start_quiz.css' %}">
+{% endblock %}
+
+{% block title %}
+    Quiz Started
+{% endblock %}
+
+{% block body %}
+
+    <!-- Button trigger modal -->
+    <button type="button" class="start_btn btn btn-primary" data-toggle="modal" data-target="#exampleModalScrollable">
+        Start Quiz
+    </button>
+
+    <div class="info_box">
+        <div class="info-title"><span>Some Rules of this Quiz</span></div>
+        <div class="info-list">
+            <div class="info">1. You will have only <span>15 seconds</span> per each question.</div>
+            <div class="info">2. Once you select your answer, it can't be undone.</div>
+            <div class="info">3. You can't select any option once time goes off.</div>
+            <div class="info">4. You can't exit from the Quiz while you're playing.</div>
+            <div class="info">5. You'll get points on the basis of your correct answers.</div>
+        </div>
+        <div class="buttons">
+            <button class="quit">Exit Quiz</button>
+            <button class="restart">Continue</button>
+        </div>
+    </div>
+
+
+    <div class="container mt-sm-5 mt-4" id="quiz-body">
+        {% for question in questions %}
+            <div class="question ml-sm-5 pl-sm-5 pt-2">
+                <div class="py-2 h5">
+                    <span class="font-weight-bold">Q.</span>
+                    <b>{{ question.question }}</b>
+                </div>
+                <div class="ml-md-3 ml-sm-3 pl-md-5 pt-sm-0 pt-3" id="options">
+
+                    <label class="options">
+                        {{ question.option1 }}
+                        <input type="radio" name="radio"> <span class="checkmark"></span>
+                    </label>
+
+                    <label class="options">
+                        {{ question.option2 }}
+                        <input type="radio" name="radio"> <span class="checkmark"></span>
+                    </label>
+
+                    <label class="options">
+                        {{ question.option3 }}
+                        <input type="radio" name="radio"> <span class="checkmark"></span>
+                    </label>
+
+                    <label class="options">
+                        {{ question.option4 }}
+                        <input type="radio" name="radio">
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="d-flex align-items-center pt-3">
+            {% if questions.has_previous %}
+                <div id="prev">
+                    <a href="?page={{ questions.previous_page_number }}" class="btn btn-primary"
+                       role="button">Previous</a>
+                </div>
+            {% endif %}
+            {% if questions.has_next %}
+                <div class="ml-auto mr-sm-5">
+                    <a href="?page={{ questions.next_page_number }}" class="btn btn-success" role="button">Next</a>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'js/student/start_quiz.js' %}"></script>
+{% endblock %}

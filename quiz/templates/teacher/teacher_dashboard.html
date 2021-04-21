@@ -1,0 +1,44 @@
+{% extends 'common/base.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/teacher/teacher-dashboard.css' %}">
+{% endblock %}
+
+{% block title %}
+    Teacher Dashboard
+{% endblock %}
+
+{% block body %}
+    <div class="teacher-dashboard">
+        <div class="container">
+            <div class="text-center mt-3">
+                <h2 class="font-weight-bold">Reports</h2>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-10 col-xs-12 mt-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title text-info font-weight-bold">Total Quizzes</h5>
+                            <p class="card-text text-primary font-weight-bold">10</p>
+                            <a href="#" class="btn btn-primary btn-block">
+                                View All Quizzes
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-6 col-sm-10 col-xs-12 mt-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title text-warning font-weight-bold">Total Students</h5>
+                            <p class="card-text text-dark font-weight-bold">34</p>
+                            <a href="#" class="btn btn-danger btn-block">
+                                View All Students</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

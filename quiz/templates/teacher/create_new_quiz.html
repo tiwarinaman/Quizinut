@@ -1,0 +1,88 @@
+{% extends 'common/base.html' %}
+
+{% block css %}
+{% endblock %}
+
+{% block title %}
+    Create New Quiz
+{% endblock %}
+
+{% block body %}
+
+    {% include 'common/message.html' %}
+
+    <div class="col-lg-10 border rounded p-4 m-4 mx-auto">
+        <nav class="mb-2 mt-2">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                       aria-controls="home"
+                       aria-selected="true">New Quiz</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#opentrivial" role="tab"
+                       aria-controls="profile" aria-selected="false">Create Quiz By Open Trivial</a>
+                </li>
+            </ul>
+        </nav>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <!-- Add Books Table -->
+
+                <div class="col-lg-10 mx-auto border rounded p-3 m-3">
+                    <p class="alert alert-info text-center font-weight-bold">Create Quiz</p>
+                    <form action="{% url 'createNewQuiz' %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label class="font-weight-bold">Quiz Name</label>
+                            <input type="text" name="quiz_name" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold">Total Questions</label>
+                            <input type="number" name="total_questions" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold">Total Marks</label>
+                            <input type="number" name="total_marks" class="form-control">
+
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold">Time Duration (In Minute)</label>
+                            <input type="number" name="time_duration" class="form-control">
+
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn form-control btn-success">Create</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <div class="tab-pane fade" id="opentrivial" role="tabpanel" aria-labelledby="profile-tab">
+                <!-- Show Books List -->
+                <h1 class="alert alert-success">Show Book Table</h1>
+
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">SR No.</th>
+                        <th scope="col">Book Name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Number Of Pages</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for d in data %}
+                        <tr>
+                            <th scope="row" id="srno">{{ forloop.counter }}</th>
+                            <td id="book_name">{{ d.book_name }}</td>
+                            <td id="book_price">{{ d.price }}</td>
+                            <td id="numberOfPages">{{ d.number_of_page }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

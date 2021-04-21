@@ -1,0 +1,71 @@
+{% extends 'common/base.html' %}
+
+{% block title %}
+    Add Question
+{% endblock %}
+
+{% block body %}
+
+    {% include 'common/message.html' %}
+    <div class="container">
+        <div class="col-lg-10 mx-auto border rounded p-3 m-3">
+            <p class="alert alert-info text-center font-weight-bold">Add Question</p>
+            <form action="#" method="post">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label class="font-weight-bold">Quiz Name</label>
+                    <input type="text" value="{{ quiz.quiz_name }}" class="form-control" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label class="font-weight-bold">Question</label>
+                    <textarea name="question" class="form-control" placeholder="Write Question Here..."
+                              style="height: 100px"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="font-weight-bold">Marks</label>
+                    <input type="number" name="marks" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label class="font-weight-bold">Option-1</label>
+                    <input type="text" name="option1" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label class="font-weight-bold">Option-2</label>
+                    <input type="text" name="option2" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label class="font-weight-bold">Option-3</label>
+                    <input type="text" name="option3" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label class="font-weight-bold">Option-4</label>
+                    <input type="text" name="option4" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label class="font-weight-bold">Correct Answer</label>
+                    <select name="correct_answer" class="form-control">
+                        <option value="-">----</option>
+                        <option value="1">Option-1</option>
+                        <option value="2">Option-2</option>
+                        <option value="3">Option-3</option>
+                        <option value="4">Option-4</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn form-control btn-success font-weight-bold">
+                        Add
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

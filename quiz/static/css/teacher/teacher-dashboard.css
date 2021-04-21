@@ -1,0 +1,15 @@
+.teacher-dashboard {
+    padding: 20px 0;
+}
+
+.card {
+    margin-top: 40px;
+    margin-bottom: 85px;
+}
+
+@media screen and  (max-width: 900px){
+    .card {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+}
