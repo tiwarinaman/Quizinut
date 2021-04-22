@@ -49,3 +49,16 @@ class Question(models.Model):
 
     def __str__(self):
         return f"{self.question} - {self.quiz.quiz_name}"
+
+
+class Result(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=True)
+    student_marks = models.IntegerField(blank=True, null=True)
+    number_of_correct_answers = models.IntegerField(blank=True, null=True)
+    time_taken = models.IntegerField(blank=True, null=True)
+    number_of_attempts = models.IntegerField(default=1, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.student.uname.first_name} {self.student.uname.last_name} - {self.quiz.quiz_name}"

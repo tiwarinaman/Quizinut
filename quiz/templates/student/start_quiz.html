@@ -11,6 +11,8 @@
 
 {% block body %}
 
+    {% include 'common/message.html' %}
+
     <!-- Button trigger modal -->
     <button id="start-button" type="button" class="btn btn-primary mt-2 btn-lg" data-toggle="modal"
             data-target="#exampleModalScrollable">
@@ -80,10 +82,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="alert alert-success" role="alert" id="resultMessage">
-        Correct Answer
     </div>
 
     <div class="container mt-sm-5 mt-4" id="quiz-body">

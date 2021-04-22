@@ -20,4 +20,6 @@ urlpatterns = [
                   path('quiz-info/<int:quiz_id>/', views.quiz_info, name="quizInfo"),
                   path('start-quiz/<int:quiz_id>/', views.start_quiz, name="startQuiz"),
                   path('get-questions/<int:quiz_id>/', views.get_questions, name="getQuestions"),
+                  path('submit-quiz/', views.submit_quiz, name="submitQuiz"),
+                  path('quiz-result/<int:quiz_id>', views.quiz_result, name="quizResult"),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

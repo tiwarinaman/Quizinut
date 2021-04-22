@@ -8,7 +8,7 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 
 from quiz.permission import *
-from .models import Student, Teacher, Quiz, Question
+from .models import Student, Teacher, Quiz, Question, Result
 
 User = get_user_model()
 
@@ -326,3 +326,55 @@ def get_questions(request, quiz_id):
     questions = Question.objects.filter(quiz=quiz)
     data = serializers.serialize('json', questions)
     return HttpResponse(data, content_type='application/json')
+
+
+@login_required(login_url='/student-login')
+@user_is_student
+def submit_quiz(request):
+    if request.method == 'POST':
+        quiz_ID = int(request.POST.get('quizID', False))
+        marks = request.POST.get('student_marks', False)
+        total_correct_answers = request.POST.get('totalCorrectAnswers', False)
+        timeTaken = request.POST.get('time_taken_to_solve', False)
+
+        if quiz_ID == '' or marks == '' or total_correct_answers == '' or timeTaken == '':
+            messages.error(request, "Something went wrong, please try again")
+            return redirect('viewQuizzes')
+        else:
+            try:
+                quizObj = Quiz.objects.get(id=quiz_ID)
+                studentObj = Student.objects.get(uname=request.user)
+                is_already_attempt = Result.objects.filter(student=studentObj, quiz=quizObj)
+
+                if is_already_attempt:
+                    result_data = Result.objects.get(student=studentObj, quiz=quizObj)
+                    result_data.student_marks = marks
+                    result_data.number_of_correct_answers = total_correct_answers
+                    result_data.time_taken = timeTaken
+                    result_data.number_of_attempts += 1
+                    result_data.save()
+                    return JsonResponse({'status': 1, 'url': '/quiz-result/' + str(quiz_ID)})
+                else:
+                    result = Result(student=studentObj, quiz=quizObj, student_marks=marks,
+                                    number_of_correct_answers=total_correct_answers, time_taken=timeTaken)
+                    result.save()
+                    return JsonResponse({'status': 1, 'url': '/quiz-result/' + str(quiz_ID)})
+            except Exception as e:
+                return HttpResponse(e)
+    else:
+        return HttpResponse("Sorry can't show you any data")
+
+
+@login_required(login_url='/student-login')
+@user_is_student
+def quiz_result(request, quiz_id):
+    studentObj = Student.objects.get(uname=request.user)
+    quizObj = Quiz.objects.get(id=quiz_id)
+    result_data = Result.objects.get(student=studentObj, quiz=quizObj)
+    percentage = (result_data.student_marks / result_data.quiz.total_marks) * 100
+
+    context = {
+        'result_data': result_data,
+        'percentage': percentage
+    }
+    return render(request, 'student/quiz_result.html', context)

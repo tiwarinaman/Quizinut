@@ -54,6 +54,8 @@ const uiCtrl = (function uiController() {
         for (let i = 0; i < option.length; i++) {
             option[i].setAttribute("onclick", "quizCtrl.chooseOption(this)");
         }
+
+        domControls['btnSubmit'].setAttribute("onclick", "quizCtrl.onSubmitQuiz()")
     }
 
     function correctAnswer(selectedOption) {
@@ -93,10 +95,12 @@ const uiCtrl = (function uiController() {
 })();
 
 const quizCtrl = (function quizHandler(UICtrl) {
-    let time, counter;
-    let countDownEl;
+    let timeTaken, counter, counterLine;
+    let studentMark = 0;
     let quizList = [];
     let questionNumber = 0;
+    let csrftoken;
+    let numberOfCorrectAnswers = 0;
 
     function fetchQuiz(api_id) {
         $.ajax({
@@ -140,7 +144,7 @@ const quizCtrl = (function quizHandler(UICtrl) {
         $("#quiz-body").show();
         fetchQuiz(quizId);
         startTimer(15); //calling startTimer function
-        startTimerLine(0); //calling startTimerLine function
+        startTimerLine(30); //calling startTimerLine function
     }
 
     function startTimer(duration) {
@@ -155,6 +159,7 @@ const quizCtrl = (function quizHandler(UICtrl) {
             }
             if (duration < 0) {
                 clearInterval(counter); //clear counter
+                timeTaken = 15 - UICtrl.domControls['timeCount'].textContent;
                 UICtrl.domControls['timeText'].textContent = "Time Off";
                 const allOptions = UICtrl.domControls['optionList'].children.length; //getting all option items
                 let correctAns = quizList[questionNumber].fields.correct_answer;
@@ -173,11 +178,23 @@ const quizCtrl = (function quizHandler(UICtrl) {
         }
     }
 
-    function startTimerLine(duration) {
+    function startTimerLine(time) {
+        counterLine = setInterval(timer, 29);
+
+        function timer() {
+            time += 1.3; //upgrading time value with 1
+            if (UICtrl.domControls['time_line']) {
+                UICtrl.domControls['time_line'].style.width = time + "px"; //increasing width of time_line with px by time value
+            }
+            if (time > 755) { //if time value is greater than 549
+                clearInterval(counterLine); //clear counterLine
+            }
+        }
     }
 
     function selectedOption(selectedOption) {
         clearInterval(counter); //clear counter
+        clearInterval(counterLine); //clear counterLine
         const currentQuiz = quizList[questionNumber];
         console.log('currentQuiz ', currentQuiz);
         const selectedAnswer = selectedOption.textContent;
@@ -185,9 +202,59 @@ const quizCtrl = (function quizHandler(UICtrl) {
         const correctAnswer = currentQuiz.fields['option' + correctAnswerNumber];
         if (selectedAnswer === correctAnswer) {
             UICtrl.correct(selectedOption, correctAnswerNumber);
+            studentMark += currentQuiz.fields.marks;
+            numberOfCorrectAnswers += 1;
         } else {
             UICtrl.inCorrect(selectedOption, correctAnswerNumber);
         }
+        timeTaken += UICtrl.domControls['timeCount'].textContent
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function submitQuiz() {
+        clearInterval(counter); //clear counter
+        clearInterval(counterLine); //clear counterLine
+
+        csrftoken = getCookie('csrftoken');
+
+
+        let result_data = {
+            quizID: quizList[0].fields.quiz,
+            student_marks: studentMark,
+            totalCorrectAnswers: numberOfCorrectAnswers,
+            time_taken_to_solve: UICtrl.domControls['timeCount'].textContent,
+            csrfmiddlewaretoken: csrftoken,
+        }
+
+        $.ajax({
+            url: "/submit-quiz/",
+            method: "POST",
+            data: result_data,
+            success: function (data) {
+                if (data.status === 1) {
+                    UICtrl.domControls['btnSubmit'].style.display = "none";
+                    window.location = data.url;
+                } else {
+                    alert("Something went wrong, please retry");
+                }
+            }
+        })
+
     }
 
 
@@ -195,7 +262,8 @@ const quizCtrl = (function quizHandler(UICtrl) {
         init: initUI,
         next: nextQuestion,
         previous: previousQuestion,
-        chooseOption: selectedOption
+        chooseOption: selectedOption,
+        onSubmitQuiz: submitQuiz
     }
 })(uiCtrl);
 
