@@ -1,0 +1,73 @@
+{% extends 'common/base.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/student/quiz-result.css' %}">
+{% endblock %}
+
+{% block title %}
+    Quiz Result
+{% endblock %}
+
+{% block body %}
+    <div class="quiz-result">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 mx-auto col-sm-12 p-3">
+                    <div class="jumbotron">
+                        <div class="text-center text-warning">
+                            <h1 class="display-4">
+                                <i class="fas fa-crown"></i>
+                            </h1>
+                        </div>
+                        <div class="lead">
+
+                            <p>
+                                Quiz Name :
+                                <span class="font-weight-bold">{{ result_data.quiz.quiz_name }}</span>
+                            </p>
+
+                            <p>
+                                Marks Obtained :
+                                <span class="font-weight-bold">{{ result_data.student_marks }}</span>
+                            </p>
+
+                            <p>
+                                Number Of Correct Answer :
+                                <span class="font-weight-bold">{{ result_data.number_of_correct_answers }}</span>
+                            </p>
+
+                            <p>
+                                Time Taken :
+                                <span class="font-weight-bold">{{ result_data.time_taken }} sec</span>
+                            </p>
+
+                            <p>
+                                Number Of Attempts :
+                                <span class="font-weight-bold">{{ result_data.number_of_attempts }}</span>
+                            </p>
+
+                            <p>
+                                Result :
+                                {% if percentage <= 60.0 %}
+                                    <span class="font-weight-bold text-danger">Failed <i
+                                            class="far fa-frown"></i> ({{ percentage }} %)</span>
+                                {% else %}
+                                    <span class="font-weight-bold text-success ">Passed <i
+                                            class="far fa-smile"></i> ({{ percentage }} %)</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <hr class="my-4">
+                        <div class="text-muted">
+                            You can retry this quiz if you are not satisfied with your marks.
+                        </div>
+                        <br>
+                        <a class="btn btn-primary btn-lg" href="{% url 'startQuiz' result_data.quiz_id %}"
+                           role="button">Retry</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

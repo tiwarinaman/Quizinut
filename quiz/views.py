@@ -1,14 +1,16 @@
+import random
+
+import requests
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import auth
 from django.core import serializers
-from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 
 from quiz.permission import *
-from .models import Student, Teacher, Quiz, Question
+from .models import Student, Teacher, Quiz, Question, Result
 
 User = get_user_model()
 
@@ -269,6 +271,48 @@ def add_question(request, quiz_id):
 
 @login_required(login_url='/teacher-login')
 @user_is_teacher
+def create_quiz_by_open_trivial(request):
+    if request.method == 'POST':
+        category = request.POST['category']
+        if category == '-':
+            messages.error(request, "Please select the category.")
+            return redirect('createNewQuiz')
+        else:
+            BASE_URL = f'https://opentdb.com/api.php?amount=10&category={category}&type=multiple'
+            resp = requests.get(BASE_URL)
+            data = resp.json()
+            # print(data['results'][0]['question'])
+
+            create_quiz = Quiz.objects.create(teacher=request.user.teacher,
+                                              quiz_name=data['results'][0]['category'],
+                                              total_question=10, added_question=0, total_marks=20, time_duration=2.5)
+            create_quiz.save()
+
+            lists = []
+            for i in range(len(data['results'])):
+                lists.append(data['results'][i]['correct_answer'])
+                for j in data['results'][0]['incorrect_answers']:
+                    lists.append(j)
+
+                random.shuffle(lists)
+                print(lists)
+                for k in range(len(lists)):
+                    if lists[k] == data['results'][i]['correct_answer']:
+                        correct_answer = k + 1
+
+                questions = Question.objects.create(quiz=create_quiz, teacher=request.user.teacher,
+                                                    question=data['results'][i]['question'], marks=2,
+                                                    option1=lists[0], option2=lists[1], option3=lists[2],
+                                                    option4=lists[3], correct_answer=correct_answer)
+                questions.save()
+                create_quiz.added_question += 1
+                create_quiz.save()
+                lists.clear()
+        return redirect('viewQuizzes')
+
+
+@login_required(login_url='/teacher-login')
+@user_is_teacher
 def delete_quiz(request, quiz_id):
     try:
         quiz = Quiz.objects.get(id=quiz_id)
@@ -300,18 +344,6 @@ def start_quiz(request, quiz_id):
     if request.is_ajax():
         return JsonResponse(questions, safe=False)
 
-    paginator = Paginator(questions, 1)
-
-    try:
-        page = request.GET.get('page', 1)
-    except:
-        page = 1
-
-    try:
-        questions = paginator.page(page)
-    except(EmptyPage, InvalidPage):
-        questions = paginator.page(paginator.num_pages)
-
     context = {
         'questions': questions,
         'qid': quiz_id,
@@ -326,3 +358,55 @@ def get_questions(request, quiz_id):
     questions = Question.objects.filter(quiz=quiz)
     data = serializers.serialize('json', questions)
     return HttpResponse(data, content_type='application/json')
+
+
+@login_required(login_url='/student-login')
+@user_is_student
+def submit_quiz(request):
+    if request.method == 'POST':
+        quiz_ID = int(request.POST.get('quizID', False))
+        marks = request.POST.get('student_marks', False)
+        total_correct_answers = request.POST.get('totalCorrectAnswers', False)
+        timeTaken = request.POST.get('time_taken_to_solve', False)
+
+        if quiz_ID == '' or marks == '' or total_correct_answers == '' or timeTaken == '':
+            messages.error(request, "Something went wrong, please try again")
+            return redirect('viewQuizzes')
+        else:
+            try:
+                quizObj = Quiz.objects.get(id=quiz_ID)
+                studentObj = Student.objects.get(uname=request.user)
+                is_already_attempt = Result.objects.filter(student=studentObj, quiz=quizObj)
+
+                if is_already_attempt:
+                    result_data = Result.objects.get(student=studentObj, quiz=quizObj)
+                    result_data.student_marks = marks
+                    result_data.number_of_correct_answers = total_correct_answers
+                    result_data.time_taken = timeTaken
+                    result_data.number_of_attempts += 1
+                    result_data.save()
+                    return JsonResponse({'status': 1, 'url': '/quiz-result/' + str(quiz_ID)})
+                else:
+                    result = Result(student=studentObj, quiz=quizObj, student_marks=marks,
+                                    number_of_correct_answers=total_correct_answers, time_taken=timeTaken)
+                    result.save()
+                    return JsonResponse({'status': 1, 'url': '/quiz-result/' + str(quiz_ID)})
+            except Exception as e:
+                return HttpResponse(e)
+    else:
+        return HttpResponse("Sorry can't show you any data")
+
+
+@login_required(login_url='/student-login')
+@user_is_student
+def quiz_result(request, quiz_id):
+    studentObj = Student.objects.get(uname=request.user)
+    quizObj = Quiz.objects.get(id=quiz_id)
+    result_data = Result.objects.get(student=studentObj, quiz=quizObj)
+    percentage = (result_data.student_marks / result_data.quiz.total_marks) * 100
+
+    context = {
+        'result_data': result_data,
+        'percentage': percentage
+    }
+    return render(request, 'student/quiz_result.html', context)

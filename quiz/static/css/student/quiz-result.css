@@ -1,0 +1,18 @@
+.quiz-result {
+    width: 60%;
+    margin: 10px auto;
+    padding: 20px;
+}
+
+.quiz-result .jumbotron {
+    padding: 20px;
+}
+
+
+@media screen and (max-width: 900px){
+    .quiz-result {
+        width: 100%;
+        padding: 0;
+        margin: 0 auto;
+    }
+}

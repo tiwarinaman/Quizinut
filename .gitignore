@@ -1,4 +1,14 @@
+<<<<<<< HEAD
 .idea
 __pycache__
 venv
 db.sqlite3
+=======
+/.idea
+/db.sqlite3
+__pycache__
+/quiz/migrations
+/accounts/migrations
+/media
+/venv
+>>>>>>> frontend_fix
