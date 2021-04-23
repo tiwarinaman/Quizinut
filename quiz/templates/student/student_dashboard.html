@@ -1,5 +1,6 @@
 {% extends 'common/base.html' %}
 {% load static %}
+{% load is_already_attempt %}
 
 {% block css %}
     <link rel="stylesheet" href="{% static 'css/student/student_dashboard.css' %}">
@@ -18,16 +19,25 @@
             <div class="row">
                 {% for quiz in quizzes %}
                     {% if quiz.total_question == quiz.added_question %}
+                        {% is_job_already_applied quiz.id request.user as already_attempt %}
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="card m-2">
                                 <div class="card-body">
-                                    <h5 class="card-title">{{ quiz.quiz_name }}</h5>
+                                    <h5 class="card-title">
+                                        {{ quiz.quiz_name }}
+                                    </h5>
                                     <p class="card-text">
                                     <div class="">Number Of Question(s): {{ quiz.total_question }}</div>
                                     <div class="">Time Duration: {{ quiz.time_duration }} min</div>
                                     </p>
-                                    <a href="{% url 'startQuiz' quiz.id %}"
-                                       class="btn btn-sm btn-primary font-weight-bold">Start Quiz</a>
+
+                                    {% if already_attempt %}
+                                        <a href="{% url 'startQuiz' quiz.id %}"
+                                           class="btn btn-sm btn-warning font-weight-bold">Retry Quiz</a>
+                                    {% else %}
+                                        <a href="{% url 'startQuiz' quiz.id %}"
+                                           class="btn btn-sm btn-primary font-weight-bold">Start Quiz</a>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

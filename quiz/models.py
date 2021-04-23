@@ -63,10 +63,3 @@ class Result(models.Model):
     def __str__(self):
         return f"{self.student.uname.first_name} {self.student.uname.last_name} - {self.quiz.quiz_name}"
 
-
-class Test(models.Model):
-    roll_no = models.IntegerField(null=True)
-    name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
