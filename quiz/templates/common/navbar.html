@@ -16,6 +16,12 @@
             {% if user.is_authenticated %}
                 {% if user.role == "student" %}
 
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'showQuizzesResult' %}">
+                            <i class="fas fa-user-graduate"></i> Quiz Results
+                        </a>
+                    </li>
+
                 {% elif user.role == "teacher" %}
                     <li class="nav-item dropdown active">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -33,20 +39,10 @@
                         </div>
                     </li>
                 {% endif %}
-                <li class="nav-item dropdown active">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        WELCOME, <span class="text-uppercase">{{ user.first_name }} <i
-                            class="fas fa-user"></i></span>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page">
+                        <i class="text-uppercase"></i> Welcome {{ request.user.first_name }}
                     </a>
-
-
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#"><i
-                                class="fas fa-key"></i> Change Password</a>
-                        <a class="dropdown-item" href="#"><i
-                                class="fas fa-user-edit"></i> Edit Profile</a>
-                    </div>
                 </li>
 
                 <li class="nav-item">

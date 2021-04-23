@@ -326,17 +326,6 @@ def delete_quiz(request, quiz_id):
 
 @login_required(login_url='/student-login')
 @user_is_student
-def quiz_info(request, quiz_id):
-    quiz_detail = Quiz.objects.get(id=quiz_id)
-
-    context = {
-        'quiz_detail': quiz_detail
-    }
-    return render(request, 'student/quiz_info.html', context)
-
-
-@login_required(login_url='/student-login')
-@user_is_student
 def start_quiz(request, quiz_id):
     quiz = Quiz.objects.get(id=quiz_id)
     questions = Question.objects.filter(quiz=quiz)
@@ -410,3 +399,15 @@ def quiz_result(request, quiz_id):
         'percentage': percentage
     }
     return render(request, 'student/quiz_result.html', context)
+
+
+@login_required(login_url='/student-login')
+@user_is_student
+def show_quizzes_results(request):
+    quizzes_results = Result.objects.filter(student__uname=request.user.id)
+    print(quizzes_results)
+
+    context = {
+        'quizzes_results': quizzes_results
+    }
+    return render(request, 'student/view_quiz_result_list.html', context)
