@@ -1,9 +1,11 @@
+import random
+
+import requests
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import auth
 from django.core import serializers
-from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 
@@ -269,6 +271,48 @@ def add_question(request, quiz_id):
 
 @login_required(login_url='/teacher-login')
 @user_is_teacher
+def create_quiz_by_open_trivial(request):
+    if request.method == 'POST':
+        category = request.POST['category']
+        if category == '-':
+            messages.error(request, "Please select the category.")
+            return redirect('createNewQuiz')
+        else:
+            BASE_URL = f'https://opentdb.com/api.php?amount=10&category={category}&type=multiple'
+            resp = requests.get(BASE_URL)
+            data = resp.json()
+            # print(data['results'][0]['question'])
+
+            create_quiz = Quiz.objects.create(teacher=request.user.teacher,
+                                              quiz_name=data['results'][0]['category'],
+                                              total_question=10, added_question=0, total_marks=20, time_duration=2.5)
+            create_quiz.save()
+
+            lists = []
+            for i in range(len(data['results'])):
+                lists.append(data['results'][i]['correct_answer'])
+                for j in data['results'][0]['incorrect_answers']:
+                    lists.append(j)
+
+                random.shuffle(lists)
+                print(lists)
+                for k in range(len(lists)):
+                    if lists[k] == data['results'][i]['correct_answer']:
+                        correct_answer = k + 1
+
+                questions = Question.objects.create(quiz=create_quiz, teacher=request.user.teacher,
+                                                    question=data['results'][i]['question'], marks=2,
+                                                    option1=lists[0], option2=lists[1], option3=lists[2],
+                                                    option4=lists[3], correct_answer=correct_answer)
+                questions.save()
+                create_quiz.added_question += 1
+                create_quiz.save()
+                lists.clear()
+        return redirect('viewQuizzes')
+
+
+@login_required(login_url='/teacher-login')
+@user_is_teacher
 def delete_quiz(request, quiz_id):
     try:
         quiz = Quiz.objects.get(id=quiz_id)
@@ -299,18 +343,6 @@ def start_quiz(request, quiz_id):
 
     if request.is_ajax():
         return JsonResponse(questions, safe=False)
-
-    paginator = Paginator(questions, 1)
-
-    try:
-        page = request.GET.get('page', 1)
-    except:
-        page = 1
-
-    try:
-        questions = paginator.page(page)
-    except(EmptyPage, InvalidPage):
-        questions = paginator.page(paginator.num_pages)
 
     context = {
         'questions': questions,

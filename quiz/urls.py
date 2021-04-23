@@ -14,6 +14,7 @@ urlpatterns = [
                   path('student-dashboard/', views.student_dashboard, name="studentDashboard"),
                   path('teacher-dashboard/', views.teacher_dashboard, name="teacherDashboard"),
                   path('new-quiz/', views.create_new_quiz, name="createNewQuiz"),
+                  path('create-quiz-open-trivial/', views.create_quiz_by_open_trivial, name="createQuizOpenTrivial"),
                   path('view-quizzes/', views.view_quizzes, name="viewQuizzes"),
                   path('add-question/<int:quiz_id>/', views.add_question, name="addQuestion"),
                   path('delete-quiz/<int:quiz_id>/', views.delete_quiz, name="deleteQuiz"),

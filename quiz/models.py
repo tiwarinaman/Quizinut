@@ -28,7 +28,7 @@ class Quiz(models.Model):
     total_question = models.IntegerField(null=True)
     added_question = models.IntegerField(null=True)
     total_marks = models.IntegerField(null=True)
-    time_duration = models.IntegerField(null=True)
+    time_duration = models.FloatField(null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -62,3 +62,11 @@ class Result(models.Model):
 
     def __str__(self):
         return f"{self.student.uname.first_name} {self.student.uname.last_name} - {self.quiz.quiz_name}"
+
+
+class Test(models.Model):
+    roll_no = models.IntegerField(null=True)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name

@@ -1,7 +1,5 @@
 {% extends 'common/base.html' %}
-
-{% block css %}
-{% endblock %}
+{% load static %}
 
 {% block title %}
     Create New Quiz
@@ -59,30 +57,34 @@
 
             </div>
             <div class="tab-pane fade" id="opentrivial" role="tabpanel" aria-labelledby="profile-tab">
-                <!-- Show Books List -->
-                <h1 class="alert alert-success">Show Book Table</h1>
-
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th scope="col">SR No.</th>
-                        <th scope="col">Book Name</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Number Of Pages</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for d in data %}
-                        <tr>
-                            <th scope="row" id="srno">{{ forloop.counter }}</th>
-                            <td id="book_name">{{ d.book_name }}</td>
-                            <td id="book_price">{{ d.price }}</td>
-                            <td id="numberOfPages">{{ d.number_of_page }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                <div class="col-lg-10 mx-auto border rounded p-3 m-3">
+                    <p class="alert alert-info text-center font-weight-bold">Create Quiz</p>
+                    <div id="questions">
+                        <div class="form-group">
+                            <label class="font-weight-bold">Select Category</label>
+                            <form action="{% url 'createQuizOpenTrivial' %}" method="post">
+                                {% csrf_token %}
+                                <select name="category" class="form-control">
+                                    <option value="-">----</option>
+                                    <option value="18">Science:Computer</option>
+                                    <option value="19">Science:Mathematics</option>
+                                    <option value="21">Sports</option>
+                                    <option value="9">General Knowledge</option>
+                                </select>
+                                <div class="text-center mt-3">
+                                    <button type="submit" class="btn btn-lg btn-outline-success font-weight-bold">
+                                        Create Quiz
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'js/teacher/create_new_quiz.js' %}"></script>
 {% endblock %}
