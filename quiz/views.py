@@ -187,7 +187,14 @@ def student_dashboard(request):
 @login_required(login_url='/teacher-login')
 @user_is_teacher
 def teacher_dashboard(request):
-    return render(request, 'teacher/teacher_dashboard.html')
+    total_quizzes = Quiz.objects.filter(teacher=request.user.teacher).count()
+    total_students = Student.objects.all().count()
+
+    context = {
+        'total_quizzes': total_quizzes,
+        'total_students': total_students
+    }
+    return render(request, 'teacher/teacher_dashboard.html', context)
 
 
 @login_required(login_url='/teacher-login')

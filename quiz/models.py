@@ -34,6 +34,15 @@ class Quiz(models.Model):
     def __str__(self):
         return f"{self.quiz_name} By - {self.teacher.uname.first_name} {self.teacher.uname.last_name}"
 
+    def get_quiz_name(self):
+        return self.quiz_name
+
+    def get_total_questions(self):
+        return self.total_question
+
+    def get_added_question(self):
+        return self.added_question
+
 
 class Question(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=True)
@@ -50,6 +59,12 @@ class Question(models.Model):
     def __str__(self):
         return f"{self.question} - {self.quiz.quiz_name}"
 
+    def get_question(self):
+        return self.question
+
+    def get_correct_answer(self):
+        return self.correct_answer
+
 
 class Result(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True)
@@ -63,3 +78,8 @@ class Result(models.Model):
     def __str__(self):
         return f"{self.student.uname.first_name} {self.student.uname.last_name} - {self.quiz.quiz_name}"
 
+    def get_student_marks(self):
+        return self.student_marks
+
+    def get_number_of_correct_answers(self):
+        return self.number_of_correct_answers

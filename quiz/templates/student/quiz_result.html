@@ -49,11 +49,11 @@
 
                             <p>
                                 Result :
-                                {% if percentage <= 60.0 %}
-                                    <span class="font-weight-bold text-danger">Failed <i
+                                {% if percentage >= 60.0 %}
+                                    <span class="font-weight-bold text-success">Passed <i
                                             class="far fa-frown"></i> ({{ percentage }} %)</span>
                                 {% else %}
-                                    <span class="font-weight-bold text-success ">Passed <i
+                                    <span class="font-weight-bold text-danger ">Failed <i
                                             class="far fa-smile"></i> ({{ percentage }} %)</span>
                                 {% endif %}
                             </p>

@@ -95,7 +95,7 @@ const uiCtrl = (function uiController() {
 })();
 
 const quizCtrl = (function quizHandler(UICtrl) {
-    let timeTaken, counter, counterLine;
+    let timeTaken = 0, counter, counterLine;
     let studentMark = 0;
     let quizList = [];
     let questionNumber = 0;
@@ -149,6 +149,7 @@ const quizCtrl = (function quizHandler(UICtrl) {
 
     function startTimer(duration) {
         counter = setInterval(handleTimer, 1000);
+        console.log(counter);
 
         function handleTimer() {
             UICtrl.domControls['timeCount'].textContent = duration;
@@ -159,7 +160,6 @@ const quizCtrl = (function quizHandler(UICtrl) {
             }
             if (duration < 0) {
                 clearInterval(counter); //clear counter
-                timeTaken = 15 - UICtrl.domControls['timeCount'].textContent;
                 UICtrl.domControls['timeText'].textContent = "Time Off";
                 const allOptions = UICtrl.domControls['optionList'].children.length; //getting all option items
                 let correctAns = quizList[questionNumber].fields.correct_answer;
@@ -207,7 +207,8 @@ const quizCtrl = (function quizHandler(UICtrl) {
         } else {
             UICtrl.inCorrect(selectedOption, correctAnswerNumber);
         }
-        timeTaken += UICtrl.domControls['timeCount'].textContent
+        timeTaken += 15 - parseInt(UICtrl.domControls['timeCount'].textContent);
+        console.log('Time Taken ', timeTaken);
     }
 
     function getCookie(name) {
@@ -237,7 +238,7 @@ const quizCtrl = (function quizHandler(UICtrl) {
             quizID: quizList[0].fields.quiz,
             student_marks: studentMark,
             totalCorrectAnswers: numberOfCorrectAnswers,
-            time_taken_to_solve: UICtrl.domControls['timeCount'].textContent,
+            time_taken_to_solve: timeTaken,
             csrfmiddlewaretoken: csrftoken,
         }
 
